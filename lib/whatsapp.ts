@@ -20,7 +20,7 @@ export function generateWhatsAppLink(
     .map((item) => {
       const subtotal = item.price * item.quantity;
 
-      return `• ${item.quantity}x ${item.name} (${formatPrice(
+      return `• ${item.quantity}x ${item.name} - ${item.variant.size}, ${item.variant.color} (${formatPrice(
         item.price,
       )} c/u) - ${formatPrice(subtotal)}`;
     })

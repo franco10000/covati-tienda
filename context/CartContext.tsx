@@ -1,10 +1,13 @@
 "use client";
 
 import { createContext, useContext, useMemo, useState } from "react";
-import type { Product } from "@/data/products";
+import type { Product, ProductVariant } from "@/types/products";
 
 export type CartItem = Product & {
   quantity: number;
+  variant: ProductVariant;
+  price: number;
+  image?: string;
 };
 
 type CartContextType = {
@@ -12,9 +15,9 @@ type CartContextType = {
   isCartOpen: boolean;
   totalItems: number;
   totalPrice: number;
-  addToCart: (product: Product) => void;
-  removeFromCart: (productId: number) => void;
-  updateQuantity: (productId: number, quantity: number) => void;
+  addToCart: (product: Product, variant: ProductVariant) => void;
+  removeFromCart: (cartItemId: string) => void;
+  updateQuantity: (cartItemId: string, quantity: number) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
@@ -26,37 +29,49 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: Product, variant: ProductVariant) => {
+    const cartItemId = `${product.id}-${variant.id}`;
+
     setCartItems((currentItems) => {
-      const existingItem = currentItems.find((item) => item.id === product.id);
+      const existingItem = currentItems.find((item) => item.id === cartItemId);
 
       if (existingItem) {
         return currentItems.map((item) =>
-          item.id === product.id
+          item.id === cartItemId
             ? { ...item, quantity: item.quantity + 1 }
             : item,
         );
       }
 
-      return [...currentItems, { ...product, quantity: 1 }];
+      return [
+        ...currentItems,
+        {
+          ...product,
+          id: cartItemId,
+          variant,
+          quantity: 1,
+          price: product.basePrice,
+          image: product.images[0],
+        },
+      ];
     });
   };
 
-  const removeFromCart = (productId: number) => {
+  const removeFromCart = (cartItemId: string) => {
     setCartItems((currentItems) =>
-      currentItems.filter((item) => item.id !== productId),
+      currentItems.filter((item) => item.id !== cartItemId),
     );
   };
 
-  const updateQuantity = (productId: number, quantity: number) => {
+  const updateQuantity = (cartItemId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      removeFromCart(cartItemId);
       return;
     }
 
     setCartItems((currentItems) =>
       currentItems.map((item) =>
-        item.id === productId ? { ...item, quantity } : item,
+        item.id === cartItemId ? { ...item, quantity } : item,
       ),
     );
   };

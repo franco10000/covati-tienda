@@ -3,20 +3,23 @@
 import { useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import { products } from "@/data/products";
+import type { ProductCategory } from "@/types/products";
 
 const categories = [
-  "Todos",
-  "Indumentaria",
-  "Accesorios",
-  "Hogar",
-  "Belleza",
-];
+  { label: "Todos", value: "all" },
+  { label: "Buzos y sweaters", value: "buzos-sweaters" },
+  { label: "Remeras", value: "remeras" },
+  { label: "Pantalones", value: "pantalones" },
+  { label: "Accesorios", value: "accesorios" },
+] as const;
 
 export default function ProductGrid() {
-  const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [selectedCategory, setSelectedCategory] = useState<
+    "all" | ProductCategory
+  >("all");
 
   const filteredProducts =
-    selectedCategory === "Todos"
+    selectedCategory === "all"
       ? products
       : products.filter((product) => product.category === selectedCategory);
 
@@ -38,20 +41,20 @@ export default function ProductGrid() {
           aria-label="Filtrar por categoría"
         >
           {categories.map((category) => {
-            const isSelected = selectedCategory === category;
+            const isSelected = selectedCategory === category.value;
 
             return (
               <button
-                key={category}
+                key={category.value}
                 type="button"
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => setSelectedCategory(category.value)}
                 className={`shrink-0 rounded-full px-4 py-2 text-sm transition-colors ${
                   isSelected
                     ? "bg-covati-sand text-covati-brown"
                     : "bg-covati-cream/60 text-covati-brown hover:bg-covati-cream"
                   }`}
               >
-                {category}
+                {category.label}
               </button>
             );
           })}

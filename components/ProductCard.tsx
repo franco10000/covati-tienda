@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from "@/context/CartContext";
-import type { Product } from "@/data/products";
+import type { Product } from "@/types/products";
 
 type ProductCardProps = {
   product: Product;
@@ -9,15 +9,23 @@ type ProductCardProps = {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
+  const availableVariant = product.variants.find((variant) => variant.stock > 0);
+  const image = product.images[0];
 
   return (
     <article className="group rounded-2xl border border-covati-sand/70 bg-white p-3">
       <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-covati-cream/40">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105 group-hover:opacity-90"
-        />
+        {image ? (
+          <img
+            src={image}
+            alt={product.name}
+            className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105 group-hover:opacity-90"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center p-6 text-center text-sm text-covati-taupe">
+            Imagen próximamente
+          </div>
+        )}
       </div>
 
       <div className="flex items-start justify-between gap-4 pt-4">
@@ -31,17 +39,18 @@ export default function ProductCard({ product }: ProductCardProps) {
           </h3>
 
           <p className="mt-1 text-sm font-medium text-covati-taupe">
-            ${product.price.toLocaleString("es-AR")}
+            ${product.basePrice.toLocaleString("es-AR")}
           </p>
         </div>
 
         <button
           type="button"
-          onClick={() => addToCart(product)}
+          onClick={() => availableVariant && addToCart(product, availableVariant)}
           aria-label={`Agregar ${product.name} al carrito`}
-          className="shrink-0 rounded-full bg-covati-brown px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-covati-taupe"
+          disabled={!availableVariant}
+          className="shrink-0 rounded-full bg-covati-brown px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-covati-taupe disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Agregar
+          {availableVariant ? "Agregar" : "Sin stock"}
         </button>
       </div>
     </article>
