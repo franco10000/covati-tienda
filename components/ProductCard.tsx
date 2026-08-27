@@ -11,8 +11,8 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
 
   return (
-    <article className="group">
-      <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-stone-100">
+    <article className="group rounded-2xl border border-covati-sand/70 bg-white p-3">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-covati-cream/40">
         <img
           src={product.image}
           alt={product.name}
@@ -22,13 +22,15 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       <div className="flex items-start justify-between gap-4 pt-4">
         <div>
-          <p className="mb-1 text-xs uppercase tracking-[0.16em] text-stone-500">
+          <p className="mb-1 text-xs uppercase tracking-[0.16em] text-covati-taupe">
             {product.category}
           </p>
-          <h3 className="text-base font-medium text-stone-950">
+
+          <h3 className="text-base font-medium text-covati-brown">
             {product.name}
           </h3>
-          <p className="mt-1 text-sm text-stone-600">
+
+          <p className="mt-1 text-sm font-medium text-covati-taupe">
             ${product.price.toLocaleString("es-AR")}
           </p>
         </div>
@@ -37,7 +39,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           type="button"
           onClick={() => addToCart(product)}
           aria-label={`Agregar ${product.name} al carrito`}
-          className="shrink-0 rounded-full border border-stone-300 px-3 py-2 text-xs font-medium text-stone-800 transition-colors hover:border-stone-950 hover:bg-stone-950 hover:text-white"
+          className="shrink-0 rounded-full bg-covati-brown px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-covati-taupe"
         >
           Agregar
         </button>

@@ -1,26 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-covati-cream: #ffdbbb;
+  --color-covati-sand: #ccbeb1;
+  --color-covati-taupe: #997e67;
+  --color-covati-brown: #664930;
+  --color-covati-bg: #faf8f5;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-covati-cream: var(--color-covati-cream);
+  --color-covati-sand: var(--color-covati-sand);
+  --color-covati-taupe: var(--color-covati-taupe);
+  --color-covati-brown: var(--color-covati-brown);
+  --color-covati-bg: var(--color-covati-bg);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+*{
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  margin: 0;
+  background: var(--color-covati-bg);
+  color: #111111;
   font-family: Arial, Helvetica, sans-serif;
 }

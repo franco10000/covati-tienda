@@ -68,12 +68,12 @@ export default function CartDrawer() {
           isCartOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between border-b border-stone-200 px-5 py-5 sm:px-6">
+        <div className="flex items-center justify-between border-b border-covati-sand/70 px-5 py-5 sm:px-6">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-stone-500">
               Tu selección
             </p>
-            <h2 className="mt-1 text-xl font-medium text-stone-950">
+            <h2 className="mt-1 text-xl font-medium text-covati-brown">
               Carrito
             </h2>
           </div>
@@ -82,7 +82,7 @@ export default function CartDrawer() {
             type="button"
             onClick={closeCart}
             aria-label="Cerrar carrito"
-            className="rounded-full p-2 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-950"
+            className="rounded-full bg-covati-brown px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-covati-taupe"
           >
             <svg
               viewBox="0 0 24 24"
@@ -99,7 +99,7 @@ export default function CartDrawer() {
 
         {cartItems.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-            <div className="rounded-full bg-stone-100 p-4 text-stone-600">
+            <div className="rounded-full bg-covati-cream/50 p-4 text-covati-taupe">
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -114,17 +114,17 @@ export default function CartDrawer() {
               </svg>
             </div>
 
-            <h3 className="mt-5 text-lg font-medium text-stone-950">
+            <h3 className="mt-5 text-lg font-medium text-covati-brown">
               Tu carrito está vacío
             </h3>
-            <p className="mt-2 text-sm leading-relaxed text-stone-600">
+            <p className="mt-2 text-sm leading-relaxed text-covati-taupe">
               Descubrí nuestra colección y agregá tus favoritos.
             </p>
 
             <button
               type="button"
               onClick={closeCart}
-              className="mt-6 rounded-full bg-stone-950 px-5 py-3 text-sm font-medium text-white transition-opacity hover:opacity-85"
+              className="rounded-full bg-covati-brown px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-covati-taupe"
             >
               Seguir navegando
             </button>
@@ -139,7 +139,7 @@ export default function CartDrawer() {
                 {cartItems.map((item) => (
                   <article
                     key={item.id}
-                    className="flex gap-4 border-b border-stone-100 pb-5"
+                    className="flex gap-4 border-b border-covati-sand/40 pb-5"
                   >
                     <img
                       src={item.image}
@@ -150,10 +150,10 @@ export default function CartDrawer() {
                     <div className="min-w-0 flex-1">
                       <div className="flex justify-between gap-3">
                         <div>
-                          <p className="text-sm font-medium text-stone-950">
+                          <p className="text-sm font-medium text-covati-brown">
                             {item.name}
                           </p>
-                          <p className="mt-1 text-sm text-stone-600">
+                          <p className="mt-1 text-sm text-covati-taupe">
                             {formatPrice(item.price)}
                           </p>
                         </div>
@@ -168,14 +168,14 @@ export default function CartDrawer() {
                       </div>
 
                       <div className="mt-3 flex items-center justify-between">
-                        <div className="flex items-center rounded-full border border-stone-200">
+                        <div className="flex items-center rounded-full border border-covati-sand/70">
                           <button
                             type="button"
                             onClick={() =>
                               updateQuantity(item.id, item.quantity - 1)
                             }
                             aria-label={`Restar una unidad de ${item.name}`}
-                            className="flex h-8 w-8 items-center justify-center text-stone-700 hover:bg-stone-100"
+                            className="flex h-8 w-8 items-center justify-center text-covati-taupe hover:bg-covati-cream/50"
                           >
                             −
                           </button>
@@ -190,13 +190,13 @@ export default function CartDrawer() {
                               updateQuantity(item.id, item.quantity + 1)
                             }
                             aria-label={`Sumar una unidad de ${item.name}`}
-                            className="flex h-8 w-8 items-center justify-center text-stone-700 hover:bg-stone-100"
+                            className="flex h-8 w-8 items-center justify-center text-covati-taupe hover:bg-covati-cream/50"
                           >
                             +
                           </button>
                         </div>
 
-                        <p className="text-sm font-medium text-stone-950">
+                        <p className="text-sm font-medium text-covati-brown">
                           {formatPrice(item.price * item.quantity)}
                         </p>
                       </div>
@@ -205,21 +205,21 @@ export default function CartDrawer() {
                 ))}
               </div>
 
-              <div className="mt-7 border-t border-stone-200 pt-5">
-                <div className="flex items-center justify-between text-lg font-medium text-stone-950">
+              <div className="mt-7 rounded-xl bg-covati-cream/50 p-4">
+                <div className="flex items-center justify-between text-lg font-medium text-covati-brown">
                   <span>Total</span>
                   <span>{formatPrice(totalPrice)}</span>
                 </div>
               </div>
 
               <div className="mt-8">
-                <h3 className="text-base font-medium text-stone-950">
+                <h3 className="text-base font-medium text-covati-brown">
                   Datos para tu pedido
                 </h3>
 
                 <div className="mt-4 space-y-4">
                   <label className="block">
-                    <span className="mb-1.5 block text-sm text-stone-700">
+                    <span className="mb-1.5 block text-sm text-covati-taupe">
                       Nombre completo
                     </span>
                     <input
@@ -231,13 +231,13 @@ export default function CartDrawer() {
                           name: event.target.value,
                         }))
                       }
-                      className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm outline-none transition focus:border-stone-950"
+                      className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm outline-none transition focus:border-covati-brown"
                       placeholder="Tu nombre"
                     />
                   </label>
 
                   <label className="block">
-                    <span className="mb-1.5 block text-sm text-stone-700">
+                    <span className="mb-1.5 block text-sm text-covati-taupe">
                       Entrega / Dirección o retiro
                     </span>
                     <input
@@ -249,13 +249,13 @@ export default function CartDrawer() {
                           delivery: event.target.value,
                         }))
                       }
-                      className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm outline-none transition focus:border-stone-950"
+                      className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm outline-none transition focus:border-covati-brown"
                       placeholder="Dirección o 'Retiro en tienda'"
                     />
                   </label>
 
                   <label className="block">
-                    <span className="mb-1.5 block text-sm text-stone-700">
+                    <span className="mb-1.5 block text-sm text-covati-taupe">
                       Método de pago preferido
                     </span>
                     <select
@@ -266,7 +266,7 @@ export default function CartDrawer() {
                           paymentMethod: event.target.value,
                         }))
                       }
-                      className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-stone-950"
+                      className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-covati-brown"
                     >
                       <option>Transferencia (10% OFF)</option>
                       <option>Efectivo</option>
@@ -276,7 +276,7 @@ export default function CartDrawer() {
                   </label>
 
                   <label className="block">
-                    <span className="mb-1.5 block text-sm text-stone-700">
+                    <span className="mb-1.5 block text-sm text-covati-taupe">
                       Notas adicionales
                     </span>
                     <textarea
@@ -288,7 +288,7 @@ export default function CartDrawer() {
                         }))
                       }
                       rows={3}
-                      className="w-full resize-none rounded-lg border border-stone-300 px-3 py-2.5 text-sm outline-none transition focus:border-stone-950"
+                      className="w-full resize-none rounded-lg border border-stone-300 px-3 py-2.5 text-sm outline-none transition focus:border-covati-brown"
                       placeholder="Ej.: horario de entrega preferido"
                     />
                   </label>
@@ -296,10 +296,10 @@ export default function CartDrawer() {
               </div>
             </div>
 
-            <div className="border-t border-stone-200 bg-white px-5 py-5 sm:px-6">
+            <div className="border-t border-covati-sand/70 bg-white px-5 py-5 sm:px-6">
               <button
                 type="submit"
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                className="rounded-full bg-covati-brown px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-covati-taupe"
               >
                 <span aria-hidden="true">◔</span>
                 Enviar pedido por WhatsApp

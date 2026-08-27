@@ -9,9 +9,9 @@ export default function Home() {
       <Header />
 
       <main>
-        <section className="border-b border-stone-200 bg-stone-50">
+        <section className="border-b border-covati-sand/70 bg-covati-bg">
           <div className="mx-auto flex min-h-[70vh] max-w-7xl flex-col justify-center px-5 py-20 sm:px-8">
-            <p className="mb-5 text-sm uppercase tracking-[0.22em] text-stone-500">
+            <p className="mb-5 text-sm uppercase tracking-[0.22em] text-covati-taupe">
               INDUMENTARIA
             </p>
 
@@ -21,15 +21,15 @@ export default function Home() {
               className="h-auto w-48 object-contain sm:w-64 lg:w-80"
             />
 
-            <p className="mt-7 max-w-xl text-base leading-relaxed text-stone-600 sm:text-lg">
-              Objetos, accesorios y prendas elegidos para acompañar tus días
-              con simpleza, calidad y estilo.
+            <p className="mt-7 max-w-xl text-base leading-relaxed text-covati-taupe sm:text-lg">
+              Objetos, accesorios y prendas elegidos para acompañar tus días con
+              simpleza, calidad y estilo.
             </p>
 
             <div className="mt-10">
               <a
                 href="#productos"
-                className="inline-flex rounded-full bg-stone-950 px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-85"
+                className="inline-flex rounded-full bg-covati-brown px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-covati-taupe"
               >
                 Ver productos
               </a>

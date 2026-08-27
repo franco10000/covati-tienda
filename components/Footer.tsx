@@ -7,7 +7,7 @@ const quickLinks = [
 
 export default function Footer() {
   return (
-    <footer id="contacto" className="bg-stone-950 text-stone-300">
+    <footer id="contacto" className="bg-covati-brown text-covati-cream">
       <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-16">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_0.8fr_1fr]">
           <div>
@@ -68,8 +68,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 border-t border-white/10 pt-6">
-          <p className="text-xs text-stone-500">
+        <div className="mt-14 border-t border-covati-cream/20 pt-6">
+          <p className="text-xs text-covati-cream/60">
             © 2026 Covati. Todos los derechos reservados.
           </p>
         </div>
