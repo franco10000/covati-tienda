@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from "@/context/CartContext";
-import type { Product } from "@/types/products";
+import type { Product, ProductVariant } from "@/types/products";
 
 type ProductCardProps = {
   product: Product;
@@ -9,8 +9,9 @@ type ProductCardProps = {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
-  const availableVariant = product.variants.find((variant) => variant.stock > 0);
-  const image = product.images[0];
+  const availableVariant = product.variants?.find((variant: ProductVariant) => (variant.stock ?? 0) > 0);
+  const image = product.images?.[0];
+  const displayPrice = product.basePrice ?? product.price ?? 0;
 
   return (
     <article className="group rounded-2xl border border-covati-sand/70 bg-white p-3">
@@ -39,7 +40,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </h3>
 
           <p className="mt-1 text-sm font-medium text-covati-taupe">
-            ${product.basePrice.toLocaleString("es-AR")}
+            ${displayPrice.toLocaleString("es-AR")}
           </p>
         </div>
 

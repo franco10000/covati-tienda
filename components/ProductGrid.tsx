@@ -5,23 +5,33 @@ import ProductCard from "@/components/ProductCard";
 import { products } from "@/data/products";
 import type { ProductCategory } from "@/types/products";
 
-const categories = [
-  { label: "Todos", value: "all" },
-  { label: "Buzos y sweaters", value: "buzos-sweaters" },
-  { label: "Remeras", value: "remeras" },
-  { label: "Pantalones", value: "pantalones" },
-  { label: "Accesorios", value: "accesorios" },
-] as const;
+const categories: { label: string; value: ProductCategory | "all" }[] = [
+  { label: "Todas", value: "all" },
+  { label: "Buzos y sweaters", value: "Buzos y sweaters" },
+  { label: "Remeras y chombas", value: "Remeras y chombas" },
+  { label: "Shorts y bermudas", value: "Shorts y bermudas" },
+  { label: "Pantalones", value: "Pantalones" },
+  { label: "Línea de lino y urbana", value: "Línea de lino y urbana" },
+  { label: "Accesorios", value: "Accesorios" },
+  { label: "Conjuntos", value: "Conjuntos" },
+];
 
 export default function ProductGrid() {
   const [selectedCategory, setSelectedCategory] = useState<
     "all" | ProductCategory
   >("all");
 
-  const filteredProducts =
-    selectedCategory === "all"
-      ? products
-      : products.filter((product) => product.category === selectedCategory);
+  const filteredProducts = products.filter((product) => {
+    if (selectedCategory === "all") return true;
+
+    // Coincide con categoría principal
+    if (product.category === selectedCategory) return true;
+
+    // Coincide con alguna categoría secundaria (ej. Línea de lino y urbana)
+    if (product.secondaryCategories?.includes(selectedCategory)) return true;
+
+    return false;
+  });
 
   return (
     <section id="productos" className="scroll-mt-24 py-16 sm:py-24">
@@ -52,7 +62,7 @@ export default function ProductGrid() {
                   isSelected
                     ? "bg-covati-sand text-covati-brown"
                     : "bg-covati-cream/60 text-covati-brown hover:bg-covati-cream"
-                  }`}
+                }`}
               >
                 {category.label}
               </button>

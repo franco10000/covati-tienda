@@ -1,24 +1,39 @@
 export type ProductCategory =
-  | "buzos-sweaters"
-  | "remeras"
-  | "pantalones"
-  | "accesorios";
+  | "Buzos y sweaters"
+  | "Remeras y chombas"
+  | "Shorts y bermudas"
+  | "Pantalones"
+  | "Línea de lino y urbana"
+  | "Accesorios"
+  | "Conjuntos";
+
+export type AccessorySubcategory =
+  | "Gorras"
+  | "Cinturones"
+  | "Medias"
+  | "Ropa Interior"
+  | "Carteras y Bolsos";
 
 export interface ProductVariant {
-  id: string;
-  size: string;
-  color: string;
-  stock: number;
+  id?: string;
+  color?: string;
+  size?: string;
+  stock?: number;
+  [key: string]: any;
 }
 
 export interface Product {
   id: string;
   name: string;
-  slug: string;
+  price: number;
+  basePrice?: number;
+  description?: string;
+  images?: string[];
   category: ProductCategory;
-  basePrice: number;
-  description: string;
-  images: string[];
-  variants: ProductVariant[];
-  isFeatured?: boolean;
+  secondaryCategories?: ProductCategory[];
+  accessorySubcategory?: AccessorySubcategory;
+  variants?: ProductVariant[];
+  colors?: string[];
+  isLinenOrUrban?: boolean;
+  [key: string]: any;
 }

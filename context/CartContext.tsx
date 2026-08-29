@@ -30,7 +30,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const addToCart = (product: Product, variant: ProductVariant) => {
-    const cartItemId = `${product.id}-${variant.id}`;
+    const cartItemId = `${product.id}-${variant.id ?? "default"}`;
+    const itemPrice = product.basePrice ?? product.price ?? 0;
 
     setCartItems((currentItems) => {
       const existingItem = currentItems.find((item) => item.id === cartItemId);
@@ -50,8 +51,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           id: cartItemId,
           variant,
           quantity: 1,
-          price: product.basePrice,
-          image: product.images[0],
+          price: itemPrice,
+          image: product.images?.[0],
         },
       ];
     });
