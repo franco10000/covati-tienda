@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import ProductCard from "@/components/ProductCard";
+import ProductModal from "@/components/ProductModal"; // <--- 1. Importamos el modal
 import { products } from "@/data/products";
-import type { ProductCategory } from "@/types/products";
+import type { ProductCategory, Product } from "@/types/products"; // <--- Añadimos Product
 
 const categories: { label: string; value: ProductCategory | "all" }[] = [
   { label: "Todas", value: "all" },
@@ -21,15 +22,13 @@ export default function ProductGrid() {
     "all" | ProductCategory
   >("all");
 
+  // Estado para saber qué producto se abrió en el modal de detalles
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
   const filteredProducts = products.filter((product) => {
     if (selectedCategory === "all") return true;
-
-    // Coincide con categoría principal
     if (product.category === selectedCategory) return true;
-
-    // Coincide con alguna categoría secundaria (ej. Línea de lino y urbana)
     if (product.secondaryCategories?.includes(selectedCategory)) return true;
-
     return false;
   });
 
@@ -73,9 +72,19 @@ export default function ProductGrid() {
 
       <div className="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard 
+            key={product.id} 
+            product={product} 
+            onSelect={(p) => setSelectedProduct(p)} // <--- Le pasamos la función para abrir el modal
+          />
         ))}
       </div>
+
+      {/* Modal de detalles de la prenda */}
+      <ProductModal 
+        product={selectedProduct} 
+        onClose={() => setSelectedProduct(null)} 
+      />
     </section>
   );
 }

@@ -20,10 +20,19 @@ export const products: Product[] = [
     description: "Chomba Jersey Lisa de excelente calidad en color negro, ideal para uso diario.",
     images: ["Art-2200.PNG"],
     variants: [
-      { id: "chomba-jersey-lisa-negro-1-s", size: "S", color: "Negro", stock: 2 },
-      { id: "chomba-jersey-lisa-negro-1-m", size: "M", color: "Negro", stock: 2 },
-      { id: "chomba-jersey-lisa-negro-1-l", size: "L", color: "Negro", stock: 2 },
-      { id: "chomba-jersey-lisa-negro-1-xl", size: "XL", color: "Negro", stock: 2 },
+      { id: "chomba-jersey-lisa-negro-1-s", image: "Art-2200-negro.jfif", size: "S", color: "Negro", stock: 2 },
+      { id: "chomba-jersey-lisa-negro-1-m", image: "Art-2200-negro.jfif", size: "M", color: "Negro", stock: 2 },
+      { id: "chomba-jersey-lisa-negro-1-l", image: "Art-2200-negro.jfif", size: "L", color: "Negro", stock: 2 },
+      { id: "chomba-jersey-lisa-negro-1-xl", image: "Art-2200-negro.jfif", size: "XL", color: "Negro", stock: 2 },
+      { id: "chomba-jersey-lisa-gris-1-s", image: "Art-2200-gris.PNG", size: "S", color: "Gris", stock: 2 },
+      { id: "chomba-jersey-lisa-gris-1-m", image: "Art-2200-gris.PNG", size: "M", color: "Gris", stock: 2 },
+      { id: "chomba-jersey-lisa-gris-1-l", image: "Art-2200-gris.PNG", size: "L", color: "Gris", stock: 2 },
+      { id: "chomba-jersey-lisa-gris-1-xl", image: "Art-2200-gris.PNG", size: "XL", color: "Gris", stock: 2 },
+      { id: "chomba-jersey-lisa-blanco-1-s", image: "Art-2200-blanco.PNG", size: "S", color: "Blanco", stock: 2 },
+      { id: "chomba-jersey-lisa-blanco-1-m", image: "Art-2200-blanco.PNG", size: "M", color: "Blanco", stock: 2 },
+      { id: "chomba-jersey-lisa-blanco-1-l", image: "Art-2200-blanco.PNG", size: "L", color: "Blanco", stock: 2 },
+      { id: "chomba-jersey-lisa-blanco-1-xl", image: "Art-2200-blanco.PNG", size: "XL", color: "Blanco", stock: 2 },
+
     ],
   },
   {
