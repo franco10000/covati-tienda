@@ -37,10 +37,11 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
 
   // 1. Buscamos la variante que coincida con el color seleccionado para mostrar su foto específica
   const variantForColor = product.variants?.find((v) => v.color === selectedColor);  
-  const DEFAULT_IMAGE = "/logo-default.png"; // <--- Ajusta esta ruta según la ubicación de tu logo
+  const DEFAULT_IMAGE = "/logo-default.png";
   const displayImage = variantForColor?.image && variantForColor.image.trim() !== "" 
       ? variantForColor.image 
       : (product.images?.[0] && product.images[0].trim() !== "" ? product.images[0] : DEFAULT_IMAGE);
+  
   // Buscar la variante exacta que coincida con el talle y color elegidos para el carrito
   const selectedVariant = product.variants?.find(
     (v) => v.size === selectedSize && v.color === selectedColor
@@ -57,28 +58,27 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="relative w-full max-w-2xl rounded-3xl bg-white p-6 shadow-2xl md:p-8">
+      <div className="relative w-full max-w-2xl max-h-[90vh] rounded-3xl bg-white shadow-2xl overflow-hidden">
         
         {/* Botón de Cerrar */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-full bg-covati-cream/60 p-2 text-covati-brown hover:bg-covati-sand"
+          className="absolute right-4 top-4 z-10 rounded-full bg-covati-cream/60 p-2 text-covati-brown hover:bg-covati-sand"
           aria-label="Cerrar modal"
         >
           ✕
         </button>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2 p-6 overflow-y-auto max-h-[90vh]">
           {/* Imagen de la prenda (Dinámica según el color seleccionado) */}
           <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-covati-cream/40">
             {displayImage ? (
               <img
                 src={displayImage}
                 alt={`${product.name} - ${selectedColor}`}
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="h-full w-full object-cover transition-transform duration-300"
                 onError={(e) => {
-                  // Si la imagen falla al cargar (porque el archivo no existe), pone el logo por defecto
-                  e.currentTarget.src = "/logo-default.png"; // O la ruta exacta de tu logo
+                  e.currentTarget.src = "/logo-default.png";
                 }}
               />
             ) : (
