@@ -39,6 +39,7 @@ export default function Header() {
         </nav>
 
         <button
+          id="cart-icon-nav"
           type="button"
           onClick={openCart}
           aria-label="Abrir carrito"
