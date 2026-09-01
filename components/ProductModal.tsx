@@ -37,7 +37,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
 
   // 1. Buscamos la variante que coincida con el color seleccionado para mostrar su foto específica
   const variantForColor = product.variants?.find((v) => v.color === selectedColor);  
-  const DEFAULT_IMAGE = "logo-default.PNG"; // <--- Ajusta esta ruta según la ubicación de tu logo
+  const DEFAULT_IMAGE = "/logo-default.png"; // <--- Ajusta esta ruta según la ubicación de tu logo
   const displayImage = variantForColor?.image && variantForColor.image.trim() !== "" 
       ? variantForColor.image 
       : (product.images?.[0] && product.images[0].trim() !== "" ? product.images[0] : DEFAULT_IMAGE);
@@ -78,7 +78,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 onError={(e) => {
                   // Si la imagen falla al cargar (porque el archivo no existe), pone el logo por defecto
-                  e.currentTarget.src = "/logo-default.PNG"; // O la ruta exacta de tu logo
+                  e.currentTarget.src = "/logo-default.png"; // O la ruta exacta de tu logo
                 }}
               />
             ) : (
