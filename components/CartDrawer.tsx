@@ -134,7 +134,7 @@ export default function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">
               <div className="space-y-5">
                 {cartItems.map((item) => {
-                  const itemImage = item.image && item.image.trim() !== "" ? item.image : "/logo-default.PNG";
+                  const itemImage = item.image && item.image.trim() !== "" ? item.image : "/logo-default.png";
 
                   return (
                     <article
@@ -146,7 +146,7 @@ export default function CartDrawer() {
                         alt={item.name}
                         className="h-20 w-16 rounded-lg object-cover"
                         onError={(e) => {
-                          e.currentTarget.src = "/logo-default.PNG";
+                          e.currentTarget.src = "/logo-default.png";
                         }}
                       />
 
@@ -293,12 +293,12 @@ export default function CartDrawer() {
                   src={
                     editingItem.variants?.find((v: ProductVariant) => v.color === editColor)?.image || 
                     editingItem.image || 
-                    "/logo-default.PNG"
+                    "/logo-default.png"
                   }
                   alt={editingItem.name}
                   className="h-52 w-39 rounded-xl object-cover shadow-md"
                   onError={(e) => {
-                    e.currentTarget.src = "/logo-default.PNG";
+                    e.currentTarget.src = "/logo-default.png";
                   }}
                 />
               </div>

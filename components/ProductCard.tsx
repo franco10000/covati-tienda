@@ -38,7 +38,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
 
   // Si la variante no tiene imagen, busca la principal del producto, 
   // y si tampoco hay, muestra el logo o imagen por defecto de Cobatti
-  const DEFAULT_IMAGE = "logo-default.PNG"; // <--- Ajusta esta ruta según la ubicación de tu logo
+  const DEFAULT_IMAGE = "logo-default.png"; // <--- Ajusta esta ruta según la ubicación de tu logo
   const displayImage = currentVariant?.image && currentVariant.image.trim() !== ""
     ? currentVariant.image
     : (product.images?.[0] && product.images[0].trim() !== "" ? product.images[0] : DEFAULT_IMAGE);
@@ -64,7 +64,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             onError={(e) => {
               // Si la imagen falla al cargar (porque el archivo no existe), pone el logo por defecto
-              e.currentTarget.src = "/logo-default.PNG"; // O la ruta exacta de tu logo
+              e.currentTarget.src = "/logo-default.png"; // O la ruta exacta de tu logo
             }}
           />
         ) : (
