@@ -134,7 +134,12 @@ export default function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">
               <div className="space-y-5">
                 {cartItems.map((item) => {
-                  const itemImage = item.image && item.image.trim() !== "" ? item.image : "/logo-default.png";
+                  // Lógica robusta para limpiar y formatear la imagen del carrito con ruta absoluta
+                  const rawItemImage = item.variant?.image || item.image || item.product?.images?.[0];
+                  const itemImage = 
+                    rawItemImage && rawItemImage.trim() !== "" && rawItemImage !== "noImages"
+                      ? (rawItemImage.startsWith("/") ? rawItemImage : `/${rawItemImage}`)
+                      : "/logo-default.png";
 
                   return (
                     <article
@@ -221,7 +226,7 @@ export default function CartDrawer() {
                 })}
               </div>
 
-              {/* Total y Formulario de Cliente (igual que antes) */}
+              {/* Total y Formulario de Cliente */}
               <div className="mt-7 rounded-xl bg-covati-cream/50 p-4">
                 <div className="flex items-center justify-between text-lg font-medium text-covati-brown">
                   <span>Total</span>
@@ -287,20 +292,31 @@ export default function CartDrawer() {
             </div>
 
             <div className="space-y-4">
-              {/* Imagen de la variante seleccionada actualmente en el modal */}
+              {/* Imagen de la variante seleccionada actualmente en el modal de edición con ruta absoluta */}
               <div className="flex justify-center mb-2">
-                <img
-                  src={
+                {(() => {
+                  const rawEditImage = 
                     editingItem.variants?.find((v: ProductVariant) => v.color === editColor)?.image || 
                     editingItem.image || 
-                    "/logo-default.png"
-                  }
-                  alt={editingItem.name}
-                  className="h-52 w-39 rounded-xl object-cover shadow-md"
-                  onError={(e) => {
-                    e.currentTarget.src = "/logo-default.png";
-                  }}
-                />
+                    editingItem.product?.images?.[0] || 
+                    "/logo-default.png";
+
+                  const editImageDisplay = 
+                    rawEditImage && rawEditImage.trim() !== "" && rawEditImage !== "noImages"
+                      ? (rawEditImage.startsWith("/") ? rawEditImage : `/${rawEditImage}`)
+                      : "/logo-default.png";
+
+                  return (
+                    <img
+                      src={editImageDisplay}
+                      alt={editingItem.name}
+                      className="h-52 w-39 rounded-xl object-cover shadow-md"
+                      onError={(e) => {
+                        e.currentTarget.src = "/logo-default.png";
+                      }}
+                    />
+                  );
+                })()}
               </div>
 
               <p className="text-base font-medium text-covati-brown">{editingItem.name}</p>
@@ -358,7 +374,7 @@ export default function CartDrawer() {
                   <button 
                     type="button" 
                     onClick={() => setEditQty(Math.max(1, editQty - 1))} 
-                    className="w-8 py-1 text-center text-covati-tauvpe hover:text-covati-brown"
+                    className="w-8 py-1 text-center text-covati-taupe hover:text-covati-brown"
                   >
                     −
                   </button>
@@ -366,7 +382,7 @@ export default function CartDrawer() {
                   <button 
                     type="button" 
                     onClick={() => setEditQty(editQty + 1)} 
-                    className="w-8 py-1 text-center text-covati-tauvpe hover:text-covati-brown"
+                    className="w-8 py-1 text-center text-covati-taupe hover:text-covati-brown"
                   >
                     +
                   </button>

@@ -26,7 +26,7 @@ export default function Home() {
           {/* Contenedor del botón: Centrado en móvil / Inferior izquierdo en escritorio */}
           <div className="absolute inset-x-0 bottom-10 sm:bottom-16 flex justify-center sm:justify-start sm:left-16 lg:left-10 z-10 px-4 sm:px-0">
             <a
-              href="/productos"
+              href="#productos"
               className="group relative inline-flex items-center justify-center rounded-full bg-white/95 backdrop-blur-md px-7 py-3.5 sm:px-8 sm:py-4 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-covati-brown shadow-xl transition-all duration-300 hover:bg-covati-brown hover:text-white active:scale-95"
             >
               Ver productos

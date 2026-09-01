@@ -37,9 +37,14 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
 
   const variantForColor = product.variants?.find((v) => v.color === selectedColor);  
   const DEFAULT_IMAGE = "/logo-default.png";
-  const displayImage = variantForColor?.image && variantForColor.image.trim() !== "" 
-      ? variantForColor.image 
-      : (product.images?.[0] && product.images[0].trim() !== "" ? product.images[0] : DEFAULT_IMAGE);
+
+  // Obtenemos la imagen de la variante o del producto, evitando "noImages"
+  const rawImage = (variantForColor?.image && variantForColor.image.trim() !== "" && variantForColor.image !== "noImages")
+    ? variantForColor.image 
+    : (product.images?.[0] && product.images[0].trim() !== "" && product.images[0] !== "noImages" ? product.images[0] : DEFAULT_IMAGE);
+
+  // Forzamos una ruta absoluta que comience con "/" para prevenir errores en subcarpetas
+  const displayImage = rawImage.startsWith("/") ? rawImage : `/${rawImage}`;
   
   const selectedVariant = product.variants?.find(
     (v) => v.size === selectedSize && v.color === selectedColor

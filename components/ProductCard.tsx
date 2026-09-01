@@ -24,29 +24,30 @@ const getColorCode = (colorName: string) => {
 };
 
 export default function ProductCard({ product, onSelect }: ProductCardProps) {
-  // Extraemos los colores únicos de las variantes
+  // Extraemos los colores únicos de las variantes[cite: 3]
   const availableColors = Array.from(
     new Set(product.variants?.map((v) => v.color).filter(Boolean))
   ) as string[];
 
-  // Estado para controlar qué color está seleccionado en la tarjeta (por defecto el primero)
+  // Estado para controlar qué color está seleccionado en la tarjeta (por defecto el primero)[cite: 3]
   const [selectedColor, setSelectedColor] = useState<string>(availableColors[0] || "");
 
-  // Buscamos si hay una imagen específica para esta variante de color
-  // (Si en tus variantes guardas imagen por color, la toma; si no, usa la principal del producto)
+  // Buscamos si hay una variante específica para este color[cite: 3]
   const currentVariant = product.variants?.find((v) => v.color === selectedColor);
 
-  // Si la variante no tiene imagen, busca la principal del producto, 
-  // y si tampoco hay, muestra el logo o imagen por defecto de Cobatti
-  const DEFAULT_IMAGE = "logo-default.png"; // <--- Ajusta esta ruta según la ubicación de tu logo
-  const displayImage = currentVariant?.image && currentVariant.image.trim() !== ""
-    ? currentVariant.image
-    : (product.images?.[0] && product.images[0].trim() !== "" ? product.images[0] : DEFAULT_IMAGE);
+  // Determinamos la imagen cruda priorizando la variante, luego el producto, o por defecto[cite: 3]
+  const rawImage = currentVariant?.image || product.images?.[0];
+
+  // Limpiamos y forzamos una ruta absoluta que comience con "/" para que no falle en subcarpetas[cite: 3]
+  const displayImage = 
+    rawImage && rawImage.trim() !== "" && rawImage !== "noImages"
+      ? (rawImage.startsWith("/") ? rawImage : `/${rawImage}`)
+      : "/logo-default.png";
 
   const displayPrice = product.basePrice ?? product.price ?? 0;
 
   const handleColorClick = (e: React.MouseEvent, color: string) => {
-    e.stopPropagation(); // Evita que se abra el modal al hacer clic en el círculo de color
+    e.stopPropagation(); // Evita que se abra el modal al hacer clic en el círculo de color[cite: 3]
     setSelectedColor(color);
   };
 
@@ -63,8 +64,8 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
             alt={`${product.name} - ${selectedColor}`}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             onError={(e) => {
-              // Si la imagen falla al cargar (porque el archivo no existe), pone el logo por defecto
-              e.currentTarget.src = "/logo-default.png"; // O la ruta exacta de tu logo
+              // Si la imagen falla al cargar, pone el logo por defecto[cite: 3]
+              e.currentTarget.src = "/logo-default.png";
             }}
           />
         ) : (

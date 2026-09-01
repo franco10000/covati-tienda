@@ -3,10 +3,10 @@
 import { useCart } from "@/context/CartContext";
 
 const navigation = [
-  { label: "Inicio", href: "#" },
-  { label: "Productos", href: "#productos" },
-  { label: "Nosotros", href: "#nosotros" },
-  { label: "Contacto", href: "#contacto" },
+  { label: "Inicio", href: "/" },
+  { label: "Productos", href: "/#productos" },
+  { label: "Nosotros", href: "/#nosotros" },
+  { label: "Contacto", href: "/#contacto" },
 ];
 
 export default function Header() {
@@ -16,7 +16,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-covati-sand/70 bg-covati-bg/95 backdrop-blur">
       <div className="mx-auto flex min-h-18 max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
         <a
-          href="#"
+          href="/"
           className="text-xl font-semibold tracking-[0.28em] text-covati-brown sm:text-2xl"
         >
           <img 
