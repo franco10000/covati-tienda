@@ -24,21 +24,28 @@ const getColorCode = (colorName: string) => {
 };
 
 export default function ProductCard({ product, onSelect }: ProductCardProps) {
-  // Extraemos los colores únicos de las variantes[cite: 3]
+  // Extraemos los colores únicos de las variantes
   const availableColors = Array.from(
     new Set(product.variants?.map((v) => v.color).filter(Boolean))
   ) as string[];
 
-  // Estado para controlar qué color está seleccionado en la tarjeta (por defecto el primero)[cite: 3]
+  // Estado para controlar qué color está seleccionado en la tarjeta (por defecto el primero)
   const [selectedColor, setSelectedColor] = useState<string>(availableColors[0] || "");
 
-  // Buscamos si hay una variante específica para este color[cite: 3]
-  const currentVariant = product.variants?.find((v) => v.color === selectedColor);
+  // Buscamos si hay una variante específica para este color (haciendo la comparación limpia sin espacios ni mayúsculas)
+  const currentVariant = product.variants?.find(
+    (v) => v.color?.toLowerCase().trim() === selectedColor?.toLowerCase().trim()
+  );
 
-  // Determinamos la imagen cruda priorizando la variante, luego el producto, o por defecto[cite: 3]
-  const rawImage = currentVariant?.image || product.images?.[0];
+  // Lógica mejorada: Buscamos la imagen de la variante seleccionada, 
+  // si no tiene, buscamos la primera variante del producto que sí tenga imagen, 
+  // y como último recurso usamos product.images
+  const rawImage = 
+    currentVariant?.image || 
+    product.variants?.find((v) => v?.image && v.image.trim() !== "")?.image || 
+    product.images?.[0];
 
-  // Limpiamos y forzamos una ruta absoluta que comience con "/" para que no falle en subcarpetas[cite: 3]
+  // Limpiamos y forzamos una ruta absoluta que comience con "/" para que no falle en subcarpetas
   const displayImage = 
     rawImage && rawImage.trim() !== "" && rawImage !== "noImages"
       ? (rawImage.startsWith("/") ? rawImage : `/${rawImage}`)
@@ -47,7 +54,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
   const displayPrice = product.basePrice ?? product.price ?? 0;
 
   const handleColorClick = (e: React.MouseEvent, color: string) => {
-    e.stopPropagation(); // Evita que se abra el modal al hacer clic en el círculo de color[cite: 3]
+    e.stopPropagation(); // Evita que se abra el modal al hacer clic en el círculo de color
     setSelectedColor(color);
   };
 
@@ -64,7 +71,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
             alt={`${product.name} - ${selectedColor}`}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             onError={(e) => {
-              // Si la imagen falla al cargar, pone el logo por defecto[cite: 3]
+              // Si la imagen falla al cargar, pone el logo por defecto
               e.currentTarget.src = "/logo-default.png";
             }}
           />

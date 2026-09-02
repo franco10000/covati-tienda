@@ -31,17 +31,19 @@ function CategoryCard({
     (p) => p.category === categoryValue || p.secondaryCategories?.includes(categoryValue)
   );
 
-  // 2. Extraemos las imágenes disponibles de esas prendas
-  const images = categoryProducts
-    .flatMap((p) => {
-      // Priorizar imágenes de variantes o del producto
-      const variantImages = p.variants?.map((v) => v.image).filter(Boolean) as string[];
-      if (variantImages && variantImages.length > 0) return variantImages;
-      return p.images && p.images.length > 0 ? p.images : [];
-    })
-    .filter((img) => img && img.trim() !== "");
+  // 2. Extraemos y limpiamos las imágenes disponibles de esas prendas
+  const rawImages = categoryProducts.flatMap((p) => {
+    const variantImages = p.variants?.map((v) => v.image).filter(Boolean) as string[];
+    if (variantImages && variantImages.length > 0) return variantImages;
+    return p.images && p.images.length > 0 ? p.images : [];
+  });
 
-  // Si no hay imágenes de productos en esa categoría, usa la por defecto
+  // Normalizamos las rutas para asegurarnos de que comiencen con "/" y filtramos vacías o "noImages"
+  const images = rawImages
+    .filter((img) => img && img.trim() !== "" && img !== "noImages")
+    .map((img) => (img.startsWith("/") ? img : `/${img}`));
+
+  // Si no hay imágenes válidas, usamos la por defecto
   const displayImages = images.length > 0 ? Array.from(new Set(images)) : ["/logo-default.png"];
 
   // 3. Estado para la transición de imágenes cada 5 segundos

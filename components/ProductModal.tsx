@@ -35,6 +35,16 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const uniqueSizes = Array.from(new Set(product.variants?.map((v) => v.size).filter(Boolean)));
   const uniqueColors = Array.from(new Set(product.variants?.map((v) => v.color).filter(Boolean)));
 
+  // Verificamos qué colores están disponibles para el talle seleccionado actualmente
+  const availableColorsForSelectedSize = selectedSize
+    ? product.variants?.filter((v) => v.size === selectedSize && (v.stock ?? 0) > 0).map((v) => v.color)
+    : uniqueColors;
+
+  // Verificamos qué talles están disponibles para el color seleccionado actualmente
+  const availableSizesForSelectedColor = selectedColor
+    ? product.variants?.filter((v) => v.color === selectedColor && (v.stock ?? 0) > 0).map((v) => v.size)
+    : uniqueSizes;
+
   const variantForColor = product.variants?.find((v) => v.color === selectedColor);  
   const DEFAULT_IMAGE = "/logo-default.png";
 
@@ -189,20 +199,25 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                     <div>
                       <p className="text-xs font-medium text-covati-brown mb-2">Talles:</p>
                       <div className="flex flex-wrap gap-1.5">
-                        {uniqueSizes.map((size) => (
-                          <button
-                            key={size}
-                            type="button"
-                            onClick={() => setSelectedSize(size || null)}
-                            className={`rounded-xl px-2.5 py-1.5 text-xs font-medium border transition-colors ${
-                              selectedSize === size
-                                ? "bg-covati-brown text-white border-covati-brown"
-                                : "border-covati-sand text-covati-brown hover:border-covati-brown"
-                            }`}
-                          >
-                            {size}
-                          </button>
-                        ))}
+                        {uniqueSizes.map((size) => {
+                          const isAvailableForColor = availableSizesForSelectedColor?.includes(size);
+                          return (
+                            <button
+                              key={size}
+                              type="button"
+                              onClick={() => setSelectedSize(size || null)}
+                              className={`rounded-xl px-2.5 py-1.5 text-xs font-medium border transition-colors ${
+                                selectedSize === size
+                                  ? "bg-covati-brown text-white border-covati-brown"
+                                  : isAvailableForColor === false
+                                  ? "border-covati-sand/40 text-covati-taupe/40 bg-covati-cream/10 line-through cursor-not-allowed"
+                                  : "border-covati-sand text-covati-brown hover:border-covati-brown"
+                              }`}
+                            >
+                              {size}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -237,20 +252,25 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                   <div className="mt-4">
                     <p className="text-xs font-medium text-covati-brown mb-2">Colores:</p>
                     <div className="flex flex-wrap gap-2">
-                      {uniqueColors.map((color) => (
-                        <button
-                          key={color}
-                          type="button"
-                          onClick={() => setSelectedColor(color || null)}
-                          className={`rounded-xl px-3 py-1.5 text-xs font-medium border transition-colors ${
-                            selectedColor === color
-                              ? "bg-covati-brown text-white border-covati-brown"
-                              : "border-covati-sand text-covati-brown hover:border-covati-brown"
-                          }`}
-                        >
-                          {color}
-                        </button>
-                      ))}
+                      {uniqueColors.map((color) => {
+                        const isAvailableForSize = availableColorsForSelectedSize?.includes(color);
+                        return (
+                          <button
+                            key={color}
+                            type="button"
+                            onClick={() => setSelectedColor(color || null)}
+                            className={`rounded-xl px-3 py-1.5 text-xs font-medium border transition-colors ${
+                              selectedColor === color
+                                ? "bg-covati-brown text-white border-covati-brown"
+                                : isAvailableForSize === false
+                                ? "border-covati-sand/40 text-covati-taupe/40 bg-covati-cream/10 line-through cursor-not-allowed"
+                                : "border-covati-sand text-covati-brown hover:border-covati-brown"
+                            }`}
+                          >
+                            {color}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
