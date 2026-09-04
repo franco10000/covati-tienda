@@ -10,12 +10,35 @@ type ProductModalProps = {
 };
 
 export default function ProductModal({ product, onClose }: ProductModalProps) {
-  const { addToCart } = useCart();
+  const { addToCart, cartItems } = useCart();
   
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // 1. REGLA DE REACT: Los hooks van SIEMPRE antes de cualquier condicional de salida (return)
+  const selectedVariant = product?.variants?.find(
+    (v) => v.size === selectedSize && v.color === selectedColor
+  );
+
+  const totalStock = selectedVariant?.stock ?? 0;
+
+  // Calculamos cuánto hay ya de esta variante en el carrito para descontarlo del stock real
+  const cartItemId = product && selectedVariant ? `${product.id}-${selectedVariant.id ?? "default"}` : "";
+  const existingCartItem = cartItems.find((item) => item.id === cartItemId);
+  const quantityInCart = existingCartItem ? existingCartItem.quantity : 0;
+
+  // Stock real disponible para agregar (Stock físico total menos lo que ya está en el carrito)
+  const currentStock = Math.max(0, totalStock - quantityInCart);
+
+  useEffect(() => {
+    if (quantity > currentStock && currentStock > 0) {
+      setQuantity(currentStock);
+    } else if (quantity < 1 && currentStock > 0) {
+      setQuantity(1);
+    }
+  }, [currentStock, quantity]);
 
   useEffect(() => {
     if (product?.variants) {
@@ -28,6 +51,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
     }
   }, [product]);
 
+  // 2. AHORA SÍ, el return condicional va después de todos los Hooks
   if (!product) return null;
 
   const displayPrice = product.basePrice ?? product.price ?? 0;
@@ -35,12 +59,10 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const uniqueSizes = Array.from(new Set(product.variants?.map((v) => v.size).filter(Boolean)));
   const uniqueColors = Array.from(new Set(product.variants?.map((v) => v.color).filter(Boolean)));
 
-  // Verificamos qué colores están disponibles para el talle seleccionado actualmente
   const availableColorsForSelectedSize = selectedSize
     ? product.variants?.filter((v) => v.size === selectedSize && (v.stock ?? 0) > 0).map((v) => v.color)
     : uniqueColors;
 
-  // Verificamos qué talles están disponibles para el color seleccionado actualmente
   const availableSizesForSelectedColor = selectedColor
     ? product.variants?.filter((v) => v.color === selectedColor && (v.stock ?? 0) > 0).map((v) => v.size)
     : uniqueSizes;
@@ -48,21 +70,14 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const variantForColor = product.variants?.find((v) => v.color === selectedColor);  
   const DEFAULT_IMAGE = "/logo-default.png";
 
-  // Obtenemos la imagen de la variante o del producto, evitando "noImages"
   const rawImage = (variantForColor?.image && variantForColor.image.trim() !== "" && variantForColor.image !== "noImages")
     ? variantForColor.image 
-    : (product.images?.[0] && product.images[0].trim() !== "" && product.images[0] !== "noImages" ? product.images[0] : DEFAULT_IMAGE);
+    : (product.images?.[0] && product.images[0].trim() !== "" && product.images[0].trim() !== "noImages" ? product.images[0] : DEFAULT_IMAGE);
 
-  // Forzamos una ruta absoluta que comience con "/" para prevenir errores en subcarpetas
   const displayImage = rawImage.startsWith("/") ? rawImage : `/${rawImage}`;
   
-  const selectedVariant = product.variants?.find(
-    (v) => v.size === selectedSize && v.color === selectedColor
-  );
+  const isStockAvailable = selectedVariant && currentStock > 0;
 
-  const isStockAvailable = selectedVariant && (selectedVariant.stock ?? 0) > 0;
-
-  // Manejador de animaciones diferenciadas
   const handleAddToCartWithAnimation = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!selectedVariant || !isStockAvailable) return;
 
@@ -72,7 +87,6 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
-      // MÓVIL: Círculo que viaja hacia el carrito de compras superior
       const flyingCircle = document.createElement("div");
       flyingCircle.className = "fixed z-50 h-5 w-5 rounded-full bg-covati-brown shadow-md transition-all duration-700 ease-in-out pointer-events-none";
       flyingCircle.style.left = `${rect.left + rect.width / 2}px`;
@@ -95,11 +109,9 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
       }, 700);
 
     } else {
-      // COMPUTADORA: Efecto "Splash" de destellos/chispitas flotantes hacia afuera
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
 
-      // Creamos 6 destellos que salen disparados en diferentes direcciones
       for (let i = 0; i < 6; i++) {
         const spark = document.createElement("div");
         spark.className = "fixed z-60 h-4 w-4 rounded-full bg-covati-brown shadow-sm transition-all duration-800 ease-out pointer-events-none";
@@ -107,7 +119,6 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
         spark.style.top = `${centerY}px`;
         document.body.appendChild(spark);
 
-        // Ángulos y distancias aleatorias para simular la explosión del splash
         const angle = (i * 60) * (Math.PI / 180);
         const distance = 70 + Math.random() * 30;
         const targetX = centerX + Math.cos(angle) * distance;
@@ -145,7 +156,6 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
       <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl bg-white shadow-2xl overflow-hidden transform transition-all duration-300 ease-out scale-95 opacity-0 animate-scaleUp">
 
-        {/* Botón de Cerrar */}
         <button
           onClick={onClose}
           className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-covati-cream/80 p-2 text-covati-brown hover:bg-covati-sand shadow-sm transition-transform active:scale-95"
@@ -154,11 +164,9 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
           ✕
         </button>
 
-        {/* Contenedor principal con scroll interno */}
         <div className="overflow-y-auto p-5 sm:p-6 max-h-[90vh] min-h-0 flex-1">
           <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6 items-start">
 
-            {/* Imagen de la prenda */}
             <div className="w-full aspect-[4/5] overflow-hidden rounded-2xl bg-covati-cream/40 mb-4 md:mb-0">
               {displayImage ? (
                 <img
@@ -176,7 +184,6 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
               )}
             </div>
 
-            {/* Detalles e información */}
             <div className="flex flex-col justify-between w-full">
               <div>
                 <p className="text-xs uppercase tracking-[0.16em] text-covati-taupe">
@@ -192,7 +199,6 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                   {product.description || "Sin descripción detallada."}
                 </p>
 
-                {/* Grid para Talles y Cantidad */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   {/* Selector de Talles */}
                   {uniqueSizes.length > 0 && (
@@ -222,14 +228,22 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                     </div>
                   )}
 
-                  {/* Selector de Cantidad */}
+                  {/* Selector de Cantidad limitado por stock real (incluyendo el carrito) */}
                   <div>
-                    <p className="text-xs font-medium text-covati-brown mb-2">Cantidad:</p>
+                    <div className="flex justify-between items-center mb-2">
+                      <p className="text-xs font-medium text-covati-brown">Cantidad:</p>
+                      {selectedVariant && (
+                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-covati-cream text-covati-brown">
+                          Disponibles: {currentStock} {quantityInCart > 0 && `(Ya tenés ${quantityInCart} en el carrito)`}
+                        </span>
+                      )}
+                    </div>
                     <div className="inline-flex items-center rounded-xl border border-covati-sand bg-covati-cream/20 p-1">
                       <button
                         type="button"
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-covati-brown shadow-sm hover:bg-covati-sand transition-colors"
+                        disabled={!selectedVariant || currentStock <= 0}
+                        className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-covati-brown shadow-sm hover:bg-covati-sand transition-colors disabled:opacity-40"
                       >
                         -
                       </button>
@@ -238,8 +252,9 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                       </span>
                       <button
                         type="button"
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-covati-brown shadow-sm hover:bg-covati-sand transition-colors"
+                        onClick={() => setQuantity(Math.min(currentStock, quantity + 1))}
+                        disabled={!selectedVariant || quantity >= currentStock}
+                        className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-covati-brown shadow-sm hover:bg-covati-sand transition-colors disabled:opacity-40"
                       >
                         +
                       </button>
@@ -276,7 +291,6 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                 )}
               </div>
 
-              {/* Botón de compra y validaciones */}
               <div className="mt-6">
                 {!selectedSize || !selectedColor ? (
                   <p className="text-xs text-amber-700 mb-2 text-center font-medium">
@@ -284,7 +298,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                   </p>
                 ) : !isStockAvailable ? (
                   <p className="text-xs text-red-600 mb-2 text-center font-medium">
-                    No hay stock disponible para esta combinación.
+                    {quantityInCart > 0 ? "Ya agregaste todo el stock disponible de esta variante al carrito." : "No hay stock disponible para esta combinación."}
                   </p>
                 ) : null}
 
@@ -294,7 +308,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                   disabled={!isStockAvailable || isAnimating}
                   className="relative overflow-hidden w-full rounded-full bg-covati-brown py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-covati-taupe active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 shadow-md"
                 >
-                  {isAnimating ? "¡Agregando..." : (isStockAvailable ? "Agregar al carrito" : "Seleccioná talle y color")}
+                  {isAnimating ? "¡Agregando..." : (isStockAvailable ? "Agregar al carrito" : "Sin stock disponible")}
                 </button>
               </div>
             </div>

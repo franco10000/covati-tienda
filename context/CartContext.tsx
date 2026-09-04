@@ -27,11 +27,15 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
   const updateCartItem = (cartItemId: string, newVariant: ProductVariant, newQuantity: number) => {
     const product = cartItems.find((item) => item.id === cartItemId);
     if (!product) return;
 
-    // Generamos un ID único basado en el tiempo o en la variante para que no se pisquen ni se sumen por fuerza bruta
+    const maxStock = newVariant.stock ?? 0;
+    const clampedQuantity = Math.min(Math.max(1, newQuantity), maxStock);
     const newUniqueId = `${product.id.split("-")[0]}-${newVariant.id ?? "default"}-${Date.now()}`;
 
     setCartItems((currentItems) =>
@@ -41,7 +45,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
               ...item,
               id: newUniqueId,
               variant: newVariant,
-              quantity: newQuantity,
+              quantity: clampedQuantity,
               image: newVariant.image || product.images?.[0] || "",
             }
           : item
@@ -49,23 +53,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
   const addToCart = (product: Product, variant: ProductVariant) => {
     const cartItemId = `${product.id}-${variant.id ?? "default"}`;
     const itemPrice = product.basePrice ?? product.price ?? 0;
+    const maxStock = variant.stock ?? 0;
 
     setCartItems((currentItems) => {
       const existingItem = currentItems.find((item) => item.id === cartItemId);
 
       if (existingItem) {
+        // Evitamos que supere el stock máximo al sumar en el carrito
+        const newQuantity = Math.min(existingItem.quantity + 1, maxStock);
         return currentItems.map((item) =>
           item.id === cartItemId
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: newQuantity }
             : item,
         );
       }
+
+      if (maxStock <= 0) return currentItems;
 
       return [
         ...currentItems,
@@ -94,9 +100,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
 
     setCartItems((currentItems) =>
-      currentItems.map((item) =>
-        item.id === cartItemId ? { ...item, quantity } : item,
-      ),
+      currentItems.map((item) => {
+        if (item.id === cartItemId) {
+          const maxStock = item.variant.stock ?? 999;
+          // Limitamos para que el botón '+' del carrito nunca supere el stock disponible
+          const clampedQuantity = Math.min(quantity, maxStock);
+          return { ...item, quantity: clampedQuantity };
+        }
+        return item;
+      }),
     );
   };
 
