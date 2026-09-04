@@ -16,6 +16,9 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [isAnimating, setIsAnimating] = useState(false);
+  
+  // NUEVO: Estado para alternar entre "front" (frente) y "back" (dorso)
+  const [viewMode, setViewMode] = useState<"front" | "back">("front");
 
   // 1. REGLA DE REACT: Los hooks van SIEMPRE antes de cualquier condicional de salida (return)
   const selectedVariant = product?.variants?.find(
@@ -49,7 +52,13 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
       setSelectedColor(colors.length === 1 ? (colors[0] ?? null) : null);
       setQuantity(1);
     }
+    setViewMode("front"); // Reseteamos al frente al abrir un producto nuevo
   }, [product]);
+
+  // Cada vez que cambie la variante seleccionada, volvemos a la vista de frente por defecto
+  useEffect(() => {
+    setViewMode("front");
+  }, [selectedColor, selectedSize]);
 
   // 2. AHORA SÍ, el return condicional va después de todos los Hooks
   if (!product) return null;
@@ -70,11 +79,20 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const variantForColor = product.variants?.find((v) => v.color === selectedColor);  
   const DEFAULT_IMAGE = "/logo-default.png";
 
-  const rawImage = (variantForColor?.image && variantForColor.image.trim() !== "" && variantForColor.image !== "noImages")
+  // Determinamos la imagen principal (frente)
+  const rawFrontImage = (variantForColor?.image && variantForColor.image.trim() !== "" && variantForColor.image !== "noImages")
     ? variantForColor.image 
-    : (product.images?.[0] && product.images[0].trim() !== "" && product.images[0].trim() !== "noImages" ? product.images[0] : DEFAULT_IMAGE);
+    : (product.images?.[0] && product.images[0].trim() !== "" && product.images[0] !== "noImages" ? product.images[0] : DEFAULT_IMAGE);
 
-  const displayImage = rawImage.startsWith("/") ? rawImage : `/${rawImage}`;
+  const displayFrontImage = rawFrontImage.startsWith("/") ? rawFrontImage : `/${rawFrontImage}`;
+
+  // NUEVO: Determinamos la imagen trasera si la variante la posee
+  const rawBackImage = variantForColor?.backImage;
+  const hasBackImage = Boolean(rawBackImage && rawBackImage.trim() !== "" && rawBackImage !== "noImages");
+  const displayBackImage = hasBackImage ? (rawBackImage!.startsWith("/") ? rawBackImage! : `/${rawBackImage!}`) : "";
+
+  // Imagen activa según el modo (frente o dorso)
+  const activeImage = viewMode === "back" && hasBackImage ? displayBackImage : displayFrontImage;
   
   const isStockAvailable = selectedVariant && currentStock > 0;
 
@@ -167,20 +185,49 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
         <div className="overflow-y-auto p-5 sm:p-6 max-h-[90vh] min-h-0 flex-1">
           <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6 items-start">
 
-            <div className="w-full aspect-[4/5] overflow-hidden rounded-2xl bg-covati-cream/40 mb-4 md:mb-0">
-              {displayImage ? (
-                <img
-                  src={displayImage}
-                  alt={`${product.name} - ${selectedColor}`}
-                  className="h-full w-full object-cover transition-transform duration-300"
-                  onError={(e) => {
-                    e.currentTarget.src = "/logo-default.png";
-                  }}
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center p-6 text-center text-sm text-covati-taupe">
-                  Sin imagen disponible
-                </div>
+            {/* Contenedor de la Imagen con Botón Dinámico de Frente / Dorso */}
+            <div className="w-full flex flex-col gap-2 mb-4 md:mb-0">
+              <div className="relative w-full aspect-[4/5] overflow-hidden rounded-2xl bg-covati-cream/40">
+                {activeImage ? (
+                  <img
+                    src={activeImage}
+                    alt={`${product.name} - ${selectedColor} (${viewMode})`}
+                    className="h-full w-full object-cover transition-transform duration-300"
+                    onError={(e) => {
+                      e.currentTarget.src = "/logo-default.png";
+                    }}
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center p-6 text-center text-sm text-covati-taupe">
+                    Sin imagen disponible
+                  </div>
+                )}
+
+                {/* Badge indicador de vista actual sobre la imagen en celular/escritorio */}
+                {hasBackImage && (
+                  <div className="absolute top-3 left-3 bg-black/50 backdrop-blur-md text-white text-[10px] font-medium px-2.5 py-1 rounded-full uppercase tracking-wider">
+                    {viewMode === "front" ? "Frente" : "Dorso / Detalle"}
+                  </div>
+                )}
+              </div>
+
+              {/* Botón de alternancia (Solo aparece si la variante actual tiene configurada una backImage) */}
+              {hasBackImage && (
+                <button
+                  type="button"
+                  onClick={() => setViewMode(viewMode === "front" ? "back" : "front")}
+                  className="w-full py-2.5 px-4 rounded-xl border border-covati-sand bg-covati-cream/40 text-covati-brown text-xs font-semibold hover:bg-covati-sand transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95"
+                >
+                  {viewMode === "front" ? (
+                    <>
+                      <span>🔄 Ver dorso / detalle de espalda</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>🔄 Ver foto principal (frente)</span>
+                    </>
+                  )}
+                </button>
               )}
             </div>
 

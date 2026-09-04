@@ -19,6 +19,8 @@ export interface ProductVariant {
   color?: string;
   size?: string;
   stock?: number;
+  image?: string;
+  backImage?: string; // NUEVO: Imagen opcional de la espalda/dorso para esta variante
   [key: string]: any;
 }
 
