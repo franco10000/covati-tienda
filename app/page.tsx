@@ -3,6 +3,8 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import ProductGrid from "@/components/ProductGrid";
 
+// Hola desde la PC de mi compañero
+
 export default function Home() {
   return (
     <>
