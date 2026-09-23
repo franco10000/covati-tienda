@@ -7,7 +7,7 @@ import type { Product, ProductVariant } from "@/types/products";
 type ProductModalProps = {
   product: Product | null;
   onClose: () => void;
-};
+};// Modificado por mi compañero
 
 export default function ProductModal({ product, onClose }: ProductModalProps) {
   const { addToCart, cartItems } = useCart();
