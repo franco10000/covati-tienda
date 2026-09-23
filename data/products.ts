@@ -70,8 +70,8 @@ export const products: Product[] = [
     description: "Buzo oversize capucha estampado de excelente calidad.",
     images: ["Art-2329-blanco.jfif"],
     variants: [
-      { id: "2329-blanco-l", image: "Art-2329-blanco.jfif", size: "L", color: "Blanco", stock: 20, backImage: "Art-2329-blanco-back.jfif" },
-      { id: "2329-blanco-xl", image: "Art-2329-blanco.jfif", size: "XL", color: "Blanco", stock: 20, backImage: "Art-2329-blanco-back.jfif" },
+      { id: "2329-blanco-l", image: "Art-2329-blanco.jfif", size: "L", color: "Blanco", stock: 1, backImage: "Art-2329-blanco-back.jfif" },
+      { id: "2329-blanco-xl", image: "Art-2329-blanco.jfif", size: "XL", color: "Blanco", stock: 3, backImage: "Art-2329-blanco-back.jfif" },
     ],
   },
   {
